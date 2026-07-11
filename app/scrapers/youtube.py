@@ -89,18 +89,18 @@ class YoutubeScraper:
         return videos
 
     # defining a function to scrape the entire channel for videos
-    def scrape_channel(self, channel_id: str, hours: int = 150) -> List[ChannelVideo]:
-        videos = self.get_latest_videos(channel_id, hours)
-        result = []
-        for video in videos:
-            transcript = self.get_transcript(video.video_id)
-            result.append(video.model_copy(update={"transcript": transcript.text if transcript else None}))
-        return result
-
+    def scrape_channel(self, channel_id: str, hours: int = 150) -> List[ChannelVideo]: 
+        videos = self.get_latest_videos(channel_id, hours) # using channel id and the hours cutoff to get the videos in a list
+        result = [] # initializing an empty list for the results
+        for video in videos: # iterating over all the videos in the list
+            transcript = self.get_transcript(video.video_id) # getting the transcripts using the get_transcript method defined above by using the video_id
+            result.append(video.model_copy(update={"transcript": transcript.text if transcript else None})) # appending the transcripts to the results
+        return result # returning the results
 
 
 if __name__ == "__main__":
-    scraper = YoutubeScraper()
-    transcript: Transcript = scraper.get_transcript("jqd6_bbjhS8")
-    print(transcript.text)
-    channel_videos: List[ChannelVideo] = scraper.scrape_channel("UCPiMR-Ize9p3dgjzZ8bo9ZQ", hours=24)
+    scraper = YoutubeScraper() # Initializing the scraper
+    transcript: Transcript = scraper.get_transcript("3u0KeTC7jso") # saving the transcripts to a pydantic model
+    print(transcript.text) # printing the transcripts
+    channel_videos: List[ChannelVideo] = scraper.scrape_channel("UCPiMR-Ize9p3dgjzZ8bo9ZQ", hours=24) # saving the channel_videos to a list using the pydantic model to include details of the videos
+     
