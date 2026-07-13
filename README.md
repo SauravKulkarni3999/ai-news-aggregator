@@ -1,51 +1,108 @@
-# Project Name
+# **LangGraph Scraper Suite**
 
-## Project Overview
-This project is designed to scrape and process articles and videos from various sources such as Anthropic, OpenAI, and YouTube. It utilizes a series of scrapers to gather data and convert it into a structured format for further analysis or display.
+## 1. Title & High-Level Overview
+**LangGraph Scraper Suite**
 
-## Tech Stack
-- **Python**: Core programming language
-- **FastAPI**: Web framework for building APIs
-- **Pydantic**: Data validation and settings management using Python type annotations
-- **Docker**: Containerization for easy deployment
-- **WebshareProxyConfig**: Proxy configuration for secure and anonymous web scraping
+This application is a sophisticated scraping and data processing tool designed for developers and data scientists. It aggregates articles and videos from Anthropic, OpenAI, and YouTube, solving the challenge of efficiently gathering and structuring large volumes of data for analysis.
 
-## Prerequisites
-- **Python 3.8+**: Ensure Python is installed on your system.
-- **Docker**: Required for containerized setup.
-- **Environment Variables**: Set up `.env` file with necessary credentials for proxy access.
+| Technology    | Description                                      |
+|---------------|--------------------------------------------------|
+| **FastAPI**   | Asynchronous web framework for building APIs     |
+| **Docker**    | Containerization for consistent environments     |
+| **Postgres**  | Relational database for structured data storage  |
+| **SQLAlchemy**| ORM for database interactions                    |
+| **LangGraph** | Stateful orchestration for agent workflows       |
 
-## Local Setup
+## 2. Key Features
+- 🚀 **Asynchronous FastAPI Backbone**: High-performance API handling.
+- 🗄️ **Robust SQLAlchemy Schema**: Manages complex relational data.
+- 🤖 **LangGraph Orchestration**: Stateful, agentic workflow management.
+- 📈 **Scalable Architecture**: Designed for high data throughput.
+- 🔄 **Containerized Deployment**: Easy setup and scaling with Docker.
 
-### Docker Setup
-1. Build the Docker image:
-   ```bash
-   docker build -t project-name .
-   ```
-2. Run the Docker container:
-   ```bash
-   docker run -d -p 8000:8000 project-name
-   ```
+## 3. Repository Architecture & Project Structure
+```
+.
+├── app/                    # Core application logic
+│   ├── scrapers/           # Scrapers for various data sources
+│   ├── main.py             # FastAPI application entry point
+├── config/                 # Configuration files and settings
+├── database/               # Database models and migrations
+├── agents/                 # LangGraph agent definitions
+├── tests/                  # Unit and integration tests
+```
 
-### Native Setup
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd <repository-directory>
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the application:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
+## 4. LangGraph Agent Workflows (System Design)
+```mermaid
+stateDiagram-v2
+    [*] --> Init
+    Init --> Node1: Start Processing
+    Node1 --> Node2: Conditional Check
+    Node2 -->|Success| FinalState
+    Node2 -->|Failure| ErrorState
+    FinalState --> [*]
+    ErrorState --> [*]
+```
+- **State Management**: The `StateDict` maintains the current state and context, allowing seamless transitions between nodes.
+- **Node Transitions**: Each node processes data and updates the `StateDict`, ensuring data integrity and flow continuity.
 
-## API Endpoints
-- **GET /articles/anthropic**: Fetch articles from Anthropic sources.
-- **GET /articles/openai**: Fetch articles from OpenAI sources.
-- **GET /videos/youtube**: Fetch latest videos from specified YouTube channels.
+## 5. Getting Started & Local Installation
 
-## Architecture
-The project follows a modular architecture with separate scrapers for each data source. The LangGraph state flow manages the state transitions and data processing pipeline, ensuring efficient data handling and transformation.
+### Pathway A: The Containerized Stack (Recommended)
+- **Prerequisites**: Docker and Docker Compose installed.
+- **Steps**:
+  1. Clone the repository:
+     ```bash
+     git clone <repository-url>
+     cd <repository-directory>
+     ```
+  2. Configure environment variables in `.env`.
+  3. Build and start the stack:
+     ```bash
+     docker-compose up --build
+     ```
+
+### Pathway B: The Native Local Environment (For Debugging)
+- **Steps**:
+  1. Create and activate a Python virtual environment:
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate
+     ```
+  2. Install dependencies:
+     ```bash
+     pip install -r requirements.txt
+     ```
+  3. Start a local Postgres instance and set environment variables.
+  4. Run the ASGI server:
+     ```bash
+     uvicorn app.main:app --reload
+     ```
+
+## 6. Configuration & Environment Variables
+| Variable Name     | Required/Optional | Example Value          | Description/Purpose                      |
+|-------------------|-------------------|------------------------|------------------------------------------|
+| `POSTGRES_USER`   | Required          | `user`                 | Username for Postgres database           |
+| `DATABASE_URL`    | Required          | `postgres://...`       | Connection URL for the database          |
+| `OPENAI_API_KEY`  | Optional          | `sk-...`               | API key for accessing OpenAI services    |
+
+## 7. Core API Endpoints Reference
+| HTTP Method | Endpoint Path          | Request Payload (JSON structure) | Response Codes / Description            |
+|-------------|------------------------|----------------------------------|-----------------------------------------|
+| GET         | /health                | N/A                              | 200 OK - Health check                   |
+| GET         | /articles/anthropic    | N/A                              | 200 OK - List of Anthropic articles     |
+| GET         | /articles/openai       | N/A                              | 200 OK - List of OpenAI articles        |
+| GET         | /videos/youtube        | N/A                              | 200 OK - List of YouTube videos         |
+
+## 8. Database Management & Migrations
+- **Initialization**: Ensure the Postgres container is running.
+- **Migrations**: Use Alembic for database migrations.
+- **Commands**:
+  1. Generate a new migration:
+     ```bash
+     alembic revision --autogenerate -m "Migration message"
+     ```
+  2. Apply migrations:
+     ```bash
+     alembic upgrade head
+     ```
