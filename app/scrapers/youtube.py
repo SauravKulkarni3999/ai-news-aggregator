@@ -80,7 +80,7 @@ class YoutubeScraper:
                 video_id = self._extract_video_id(entry.link) # getting the id for videos that qualify as per the cutoff time
                 videos.append(ChannelVideo(  # appending the required entries of the feed to the videos list instantiated above. Utilizing the typehint of the channelvideo class
                     title=entry.title,
-                    url=entry.url,
+                    url=entry.link,
                     video_id=video_id,
                     published_at=published_time,
                     description=entry.get("summary", "")

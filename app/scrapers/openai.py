@@ -6,6 +6,7 @@ import feedparser
 
 # Defining a class for storing each openai article in the time frame of interest
 class OpenAIArticle(BaseModel):
+    guid: str
     title: str
     description: str
     url: str
@@ -39,7 +40,8 @@ class OpenAIScraper:
                     articles.append(OpenAIArticle(
                         title=entry.get("title", ""),
                         description=entry.get("description", ""),
-                        url=entry.get("url", ""),
+                        url=entry.get("link", ""),
+                        guid=entry.get("id", entry.get("link", "")),
                         published_at=published_time,
                         category=entry.get("tags", [{}])[0].get("term") if entry.get("tags") else None
                     ))
