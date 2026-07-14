@@ -71,6 +71,18 @@ def generate_email_digest(hours: int = 24, top_n: int = 10) -> EmailDigestRespon
 
 
 def send_digest_email(hours: int = 24, top_n: int = 10) -> dict:
+    repo = Repository()
+    digests = repo.get_recent_digest(hours=hours)
+    
+    if len(digests) == 0:
+        logger.info("No new digests found. Nothing to send.")
+        return {
+            "success": True,
+            "skipped": True,
+            "message": "No new digests available",
+            "article_count": 0
+        }
+
     try:
         result = generate_email_digest(hours=hours, top_n=top_n)
         markdown_content = result.to_markdown()
@@ -83,12 +95,16 @@ def send_digest_email(hours: int = 24, top_n: int = 10) -> dict:
             body_text=markdown_content,
             body_html=html_content
         )
+
+        digest_ids = [article.digest_id for article in result.articles]
+        marked_count = repo
         
-        logger.info("Email sent successfully!")
+        logger.info(f"Email sent successfully! Marked {marked_count} digests as sent.")
         return {
             "success": True,
             "subject": subject,
-            "articles_count": len(result.articles)
+            "articles_count": len(result.articles),
+            "marked_as_sent": marked_count
         }
     except ValueError as e:
         logger.error(f"Error sending email: {e}")
