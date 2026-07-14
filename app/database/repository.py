@@ -250,7 +250,18 @@ class Repository:
                 "url": d.url,
                 "title": d.title,
                 "summary": d.summary,
-                "created_at": d.created_at
+                "created_at": d.created_at,
+                "sent_at": d.sent_at
             }
             for d in digests
         ]
+
+    def mark_digests_as_sent(self, digest_ids: List[str]) -> int:
+        sent_time = datetime.now(timezone.utc)
+        updated = (
+            self.session.query(Digest)
+            .filter(Digest.id.in_(digest_ids))
+            .update({Digest.sent_at: sent_time}, synchronize_session=False)
+        )
+        self.session.commit()
+        return updated
